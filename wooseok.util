@@ -1,0 +1,7 @@
+export TERM=xterm-color
+
+set -o vi
+EDITOR=vi;
+export EDITOR
+
+export TBSVR_STOP_AT_INIT_STR=-1
