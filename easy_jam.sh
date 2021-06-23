@@ -27,27 +27,31 @@ function set_tbhome(){
             echo -e $cond1
             echo -e "\n Please retry."
     esac 
-    echo " Working Directory is [ $TB_DIR ]."
+    cyan_echo " Working Directory is [ $TB_DIR ]."
+    
+    if [ $(exist_check_tbhome "${TB_DIR}" "${TB_HOME}") -eq 0 ]; then
+        red_echo "TB_HOME is not existed under TB_DIR. TB_HOME: $TB_HOME // TB_DIR: $TB_DIR"
+        unset TB_HOME
+    fi
 
     while [ -z `echo $TB_HOME` ]; do
-        echo " TB_HOME is not set yet. Which version do you want?"
+        echo " TB_HOME is not set yet or set uncorrectly. Which version do you want?"
         read fixset coreset
 
         if [ ${fixset} -gt -1 -a ${fixset} -lt 10 -a ${coreset} -gt 1000 -a ${coreset} -lt 10000 ]; 
         then
             TB_VER="FS0${fixset}_CS_${coreset}"
             TB_HOME="${TB_DIR}/${TB_VER}"
+
+            if [ $(exist_check_tbhome "${TB_DIR}" "${TB_HOME}") -eq 0 ]; then
+                red_echo "TB_HOME is not existed under TB_DIR. TB_HOME: $TB_HOME // TB_DIR: $TB_DIR"
+                unset TB_HOME
+            fi
+        else
+            red_echo "Wrong range. please retry."
         fi
     done
-
-    flag=$(exist_check_tbhome "${TB_DIR}" "${TB_HOME}") 
-
-    if [ "${flag}" = "0" ]; then
-        echo " TB_HOME is not existed in TB_DIR: TB_HOME is [ $TB_HOME ], but path is [ $TB_DIR ]."
-        result="0"
-    else
-        result="1"
-    fi
+    result=1
 }
 
 # main
@@ -56,7 +60,7 @@ cyan_echo "===== Script [easy_jam.sh] is executed. ====="
 # 0. if TB_HOME is not set, then set it.
 set_tbhome ${1}
 if [ "${result}" = "1" ]; then
-    echo " Current TB_HOME is [ $TB_HOME ]."
+    cyan_echo " Current TB_HOME is [ $TB_HOME ]."
     {
         cd $TB_HOME;
         . tbenv $TB_HOME tibero;
