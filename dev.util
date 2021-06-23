@@ -1,0 +1,9 @@
+export DEV_UTIL="$HOME/dev_util"
+
+if [ ! -d ${DEV_UTIL} ]; then
+    mkdir ${DEV_UTIL} 
+fi
+
+alias ezj='. $DEV_UTIL/easy_jam.sh'
+alias dvu='cd $DEV_UTIL'
+alias nss='. $DEV_UTIL/create_script.sh'
